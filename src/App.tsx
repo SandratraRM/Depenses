@@ -2,50 +2,48 @@ import React, { useEffect, useRef, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { getLoggedUser, loginWithGoogle, logout } from "./google/auth";
-import { getIdToken, GoogleAuthProvider, User } from "firebase/auth";
+import { User } from "firebase/auth";
+import AppBar from "./appbar/Appbar";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { setUser } from "./appbar/UserSlice";
+import { Button, Container, Typography } from "@mui/material";
 
 function App(): JSX.Element {
-    const [user, setUser] = useState<User | null>();
-    const [token, setToken] = useState<string>();
-    const [needLogin, setNeedLogin] = useState(false);
-    const inited = useRef(false);
-    const updateUser = () => {
-        getLoggedUser().then((user) => {
-            setUser(user);
-        });
+    const user = useAppSelector((state) => state.user.current);
+    const dispatch = useAppDispatch();
+    const handleSetUser = (user: User | null) => {
+        dispatch(setUser(user));
     };
-    useEffect(() => {
-        if (inited.current) {
-            return;
-        }
-        inited.current = true;
-        updateUser();
-    }, []);
-
-    useEffect(() => {
-        setNeedLogin(user === null);
-    }, [user]);
     const handleLogin = () => {
         loginWithGoogle().then((user) => {
-            if (user) {
-                setUser(user);
-            }
+            handleSetUser(user);
         });
     };
-    const handleLogout = async () => {
-        await logout();
-        updateUser();
-    };
+    const login = user === null && (
+        <Container
+            sx={{
+                textAlign: "center",
+                p: 2,
+            }}
+        >
+            <Typography
+                variant="h5"
+                sx={{
+                    m: 2,
+                }}
+            >
+                Start by log in with Google
+            </Typography>
+            <Button variant="contained" onClick={handleLogin}>
+                Login
+            </Button>
+        </Container>
+    );
+
     return (
         <>
-            {needLogin && <button onClick={handleLogin}>Login</button>}
-            {user && (
-                <div>
-                    <img referrerPolicy="no-referrer" src={user.photoURL as string} />
-                    <p>User name: {user.displayName}</p>
-                    <button onClick={handleLogout}>Logout</button>
-                </div>
-            )}
+            <AppBar />
+            {login}
         </>
     );
 }
