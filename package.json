@@ -12,16 +12,21 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/gapi": "^0.0.43",
+    "@types/gapi.client.oauth2": "^2.0.3",
+    "@types/gapi.client.sheets": "^4.0.20201030",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.68",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "firebase": "^9.12.1",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
+    "scriptjs": "^2.5.9",
     "typescript": "^4.8.4",
     "web-vitals": "^2.1.4"
   },
@@ -48,5 +53,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/google.accounts": "^0.0.2",
+    "@types/scriptjs": "^0.0.2"
   }
 }

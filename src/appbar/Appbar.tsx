@@ -9,24 +9,19 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import PaidIcon from "@mui/icons-material/Paid";
-import { useRef, useState } from "react";
-import { User } from "firebase/auth";
-import { getLoggedUser, loginWithGoogle, logout } from "../google/auth";
+import { useState } from "react";
+import { loginWithGoogle, logout } from "../google/Auth";
 import { Button, ListItemIcon, ListItemText, Stack } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { setUser } from "./UserSlice";
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const AppBar = () => {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const dispatch = useAppDispatch();
+
     const user = useAppSelector((state) => state.user.current);
-    const dispatchSetUser = (user: User | null) => {
-        dispatch(setUser(user));
-    };
+
     const [needLogin, setNeedLogin] = useState(false);
-    const inited = useRef(false);
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -35,33 +30,16 @@ const AppBar = () => {
         setAnchorElUser(null);
     };
 
-    const updateUser = () => {
-        getLoggedUser().then((user) => {
-            dispatchSetUser(user);
-        });
-    };
-    React.useEffect(() => {
-        if (inited.current) {
-            return;
-        }
-        inited.current = true;
-        updateUser();
-    }, []);
-
     React.useEffect(() => {
         setNeedLogin(user === null);
     }, [user]);
+
     const handleLogin = () => {
-        loginWithGoogle().then((user) => {
-            if (user) {
-                dispatchSetUser(user);
-            }
-        });
+        loginWithGoogle(dispatch);
     };
     const handleLogout = async () => {
         handleCloseUserMenu();
-        await logout();
-        updateUser();
+        await logout(dispatch);
     };
 
     return (

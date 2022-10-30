@@ -1,0 +1,1 @@
+export type ValueInputOption = 'RAW' | 'USER_ENTERED'
